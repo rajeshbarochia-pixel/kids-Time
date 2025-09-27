@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ફ્લિપ કાર્ડ્સ (૧–૨૦) — ફક્ત ગુજરાતી</title>
+  <style>
+    :root{
+      --size: min(130px, 20vw);
+      --radius: 14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,Gujarati,Arial,sans-serif;
+      background:linear-gradient(180deg,#fdfbff,#f2f4ff);
+      padding:18px;
+      min-height: 100vh;
+    }
+    header{text-align:center;margin-bottom:14px}
+    h1{margin:6px 0;font-size:clamp(18px,4vw,28px)}
+    p.sub{margin:0;opacity:.8;font-size:14px}
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    button {
+      background: #6c63ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+    }
+    button:hover {
+      background: #5a52d5;
+    }
+
+    .board{
+      max-width:1100px;margin:18px auto;display:grid;
+      grid-template-columns:repeat(5,1fr);gap:14px;justify-items:center;
+    }
+    @media(max-width:720px){.board{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:480px){.board{grid-template-columns:repeat(2,1fr)}}
+
+    .card{width:var(--size);height:var(--size);perspective:1000px;cursor:pointer}
+    .inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;
+      transition:transform .55s ease; border-radius:var(--radius);}
+    .card.flipped .inner{transform:rotateY(180deg)}
+
+    .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-weight:800;color:#fff;font-size:clamp(28px,6vw,42px);
+      backface-visibility:hidden;border-radius:var(--radius);text-align:center;line-height:1.3;}
+    .front{background:var(--clr)}
+    .back{background:#ff8a65;transform:rotateY(180deg);font-size:clamp(16px,4vw,24px);padding:6px;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ફ્લિપ કાર્ડ્સ — ૧ થી ૨૦</h1>
+    <p class="sub">કાર્ડ પર ટચ કરો → પલટી જશે અને ગુજરાતી અવાજ બોલશે. ૨ સેકન્ડ પછી પાછું પલટી જશે.</p>
+  </header>
+
+  <div class="controls">
+    <button id="playAllBtn">બધા અવાજ સાંભળો</button>
+    <button id="resetBtn">કાર્ડ્સ રીસેટ કરો</button>
+  </div>
+
+  <main>
+    <div id="board" class="board"></div>
+  </main>
+
+  <script>
+    const DIG = ["૧","૨","૩","૪","૫","૬","૭","૮","૯","૧૦","૧૧","૧૨","૧૩","૧૪","૧૫","૧૬","૧૭","૧૮","૧૯","૨૦"];
+    const WORD = ["એક","બે","ત્રણ","ચાર","પાંચ","છ","સાત","આઠ","નવ","દસ","અગિયાર","બાર","તેર","ચૌદ","પંદર","સોળ","સત્તર","અઢાર","ઓગણીસ","વીસ"];
+    const COLORS = [
+      "#6c63ff","#f54291","#2ecc71","#ff9800","#00bcd4",
+      "#9c27b0","#795548","#607d8b","#ff5252","#4caf50",
+      "#2196f3","#ffeb3b","#8bc34a","#ff5722","#9c27b0",
+      "#3f51b5","#009688","#e91e63","#cddc39","#673ab7"
+    ];
+
+    const board = document.getElementById("board");
+    const playAllBtn = document.getElementById("playAllBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function createCard(i){
+      const card=document.createElement("div");
+      card.className="card";
+      const inner=document.createElement("div");
+      inner.className="inner";
+      const front=document.createElement("div");
+      front.className="face front";
+      front.style.setProperty("--clr", COLORS[i]);
+      front.textContent=DIG[i];
+      const back=document.createElement("div");
+      back.className="face back";
+      back.textContent=WORD[i];  // ફક્ત ગુજરાતી શબ્દ
+      inner.append(front,back);
+      card.appendChild(inner);
+
+      card.addEventListener("click",()=>{
+        card.classList.add("flipped");
+        speak(WORD[i]);  // ફક્ત ગુજરાતી અવાજ
+        setTimeout(()=>card.classList.remove("flipped"),2000);
+      });
+
+      return card;
+    }
+
+    function speak(txt){
+      if(!("speechSynthesis" in window)) return;
+      const u=new SpeechSynthesisUtterance(txt);
+      u.lang="gu-IN";   // ગુજરાતી અવાજ
+      u.rate=0.95;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }
+
+    function playAll() {
+      // Play all numbers in sequence with delays
+      WORD.forEach((word, index) => {
+        setTimeout(() => {
+          speak(word);
+        }, index * 2200); // 2.2 second delay between each
+      });
+    }
+
+    function resetCards() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.classList.remove('flipped');
+      });
+    }
+
+    // Initialize the board with cards
+    DIG.forEach((_,i)=>board.appendChild(createCard(i)));
+
+    // Add event listeners to buttons
+    playAllBtn.addEventListener('click', playAll);
+    resetBtn.addEventListener('click', resetCards);
+  </script>
+</body>
+</html>
