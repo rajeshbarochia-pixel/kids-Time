@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ગુજરાતી ઘડિયાળ - ૧ થી ૧૨ અંકો સાથે</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Nirmala UI', 'Arial', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    .clock-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin: 30px 0;
+    }
+    
+    .analog-clock {
+      width: 300px;
+      height: 300px;
+      border: 10px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      position: relative;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px);
+    }
+    
+    .hand {
+      width: 50%;
+      height: 6px;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+      border-radius: 4px;
+    }
+    
+    .hour-hand {
+      height: 8px;
+      width: 35%;
+      left: 15%;
+      background: #FF9800;
+    }
+    
+    .minute-hand {
+      height: 6px;
+      width: 45%;
+      left: 5%;
+      background: #4CAF50;
+    }
+    
+    .second-hand {
+      height: 3px;
+      background: #F44336;
+    }
+    
+    .center-circle {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .clock-number {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .digital-clock {
+      text-align: center;
+      font-size: 3rem;
+      margin: 20px 0;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px 30px;
+      border-radius: 15px;
+      letter-spacing: 3px;
+      font-weight: bold;
+    }
+    
+    .am-pm {
+      font-size: 1.5rem;
+      margin-left: 10px;
+      vertical-align: super;
+    }
+    
+    .time-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    input {
+      padding: 12px 15px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      width: 80px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    button {
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      background: #FF9800;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-weight: bold;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background: #F57C00;
+    }
+    
+    .voice-btn {
+      background: #4CAF50;
+    }
+    
+    .voice-btn:hover {
+      background: #388E3C;
+    }
+    
+    .instructions {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    
+    .instructions h3 {
+      margin-bottom: 10px;
+      color: #FFD700;
+    }
+    
+    .instructions ul {
+      padding-left: 20px;
+    }
+    
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    
+    @media (max-width: 600px) {
+      .clock-container {
+        gap: 20px;
+      }
+      
+      .analog-clock {
+        width: 250px;
+        height: 250px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .digital-clock {
+        font-size: 2.2rem;
+      }
+      
+      .clock-number {
+        font-size: 1.2rem;
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>ગુજરાતી ઘડિયાળ - ૧ થી ૧૨ અંકો સાથે</h1>
+  <p class="subtitle">અંકો દાખલ કરો અને ઘડિયાળના કાંટા સ્વચાલિત રીતે ગોઠવાઈ જશે</p>
+  
+  <div class="container">
+    <div class="clock-container">
+      <div class="analog-clock">
+        <div class="clock-face">
+          <div class="hand hour-hand"></div>
+          <div class="hand minute-hand"></div>
+          <div class="hand second-hand"></div>
+          <div class="center-circle"></div>
+          
+          <!-- ઘડિયાળના અંકો 1 to 12 -->
+          <div class="clock-number" style="top: 10px; left: 50%; transform: translateX(-50%);">૧૨</div>
+          <div class="clock-number" style="top: 25px; right: 65px;">૧</div>
+          <div class="clock-number" style="top: 65px; right: 25px;">૨</div>
+          <div class="clock-number" style="top: 50%; right: 10px; transform: translateY(-50%);">૩</div>
+          <div class="clock-number" style="bottom: 65px; right: 25px;">૪</div>
+          <div class="clock-number" style="bottom: 25px; right: 65px;">૫</div>
+          <div class="clock-number" style="bottom: 10px; left: 50%; transform: translateX(-50%);">૬</div>
+          <div class="clock-number" style="bottom: 25px; left: 65px;">૭</div>
+          <div class="clock-number" style="bottom: 65px; left: 25px;">૮</div>
+          <div class="clock-number" style="top: 50%; left: 10px; transform: translateY(-50%);">૯</div>
+          <div class="clock-number" style="top: 65px; left: 25px;">૧૦</div>
+          <div class="clock-number" style="top: 25px; left: 65px;">૧૧</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="digital-clock" id="digitalTime">૦૦:૦૦:૦૦ <span class="am-pm" id="amPm">AM</span></div>
+    
+    <div class="time-input">
+      <div class="input-group">
+        <div>
+          <label for="hours">કલાક (૧-૧૨)</label>
+          <input type="number" id="hours" min="1" max="12" value="12">
+        </div>
+        <div>
+          <label for="minutes">મિનિટ</label>
+          <input type="number" id="minutes" min="0" max="59" value="0">
+        </div>
+        <div>
+          <label for="seconds">સેકન્ડ</label>
+          <input type="number" id="seconds" min="0" max="59" value="0">
+        </div>
+        <div>
+          <label for="ampm">સવાર/રાત</label>
+          <select id="ampm" style="padding: 12px 15px; font-size: 1.2rem; border-radius: 8px; background: rgba(255, 255, 255, 0.9);">
+            <option value="AM">સવાર (AM)</option>
+            <option value="PM">રાત (PM)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <button id="setTimeBtn">સમય સેટ કરો</button>
+        <button id="useRealTimeBtn">વાસ્તવિક સમય</button>
+        <button id="speakTimeBtn" class="voice-btn">સમય બોલો</button>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <h3>સૂચનાઓ:</h3>
+      <ul>
+        <li>કલાક (૧ થી ૧૨), મિનિટ અને સેકન્ડ માટે અંકો દાખલ કરો</li>
+        <li>સવાર અથવા રાત પસંદ કરો</li>
+        <li>"સમય સેટ કરો" બટન દબાવો અને ઘડિયાળના કાંટા સ્વચાલિત રીતે ગોઠવાઈ જશે</li>
+        <li>"વાસ્તવિક સમય" બટન વાસ્તવિક સમય પર પાછા ફરવા માટે</li>
+        <li>"સમય બોલો" બટન દબાવો તો ઘડિયાળ સમય ગુજરાતીમાં બોલશે</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // DOM elements
+    const hourHand = document.querySelector('.hour-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const secondHand = document.querySelector('.second-hand');
+    const digitalTime = document.getElementById('digitalTime');
+    const amPmElement = document.getElementById('amPm');
+    const hoursInput = document.getElementById('hours');
+    const minutesInput = document.getElementById('minutes');
+    const secondsInput = document.getElementById('seconds');
+    const ampmInput = document.getElementById('ampm');
+    const setTimeBtn = document.getElementById('setTimeBtn');
+    const useRealTimeBtn = document.getElementById('useRealTimeBtn');
+    const speakTimeBtn = document.getElementById('speakTimeBtn');
+    
+    // Variables
+    let useRealTime = true;
+    let customTime = { hours: 12, minutes: 0, seconds: 0, ampm: 'AM' };
+    
+    // Gujarati digits
+    const gujaratiDigits = ['૦', '૧', '૨', '૩', '૪', '૫', '૬', '૭', '૮', '૯'];
+    
+    // Convert number to Gujarati digits
+    function toGujaratiDigits(number) {
+      return number.toString().split('').map(digit => gujaratiDigits[parseInt(digit)]).join('');
+    }
+    
+    // Format time to two digits with Gujarati numbers
+    function formatTime(time) {
+      return time < 10 ? gujaratiDigits[0] + gujaratiDigits[time] : 
+             toGujaratiDigits(Math.floor(time / 10)) + toGujaratiDigits(time % 10);
+    }
+    
+    // Set clock hands
+    function setClockHands(hours, minutes, seconds) {
+      // Convert to 12-hour format for clock display
+      const displayHours = hours % 12 || 12;
+      
+      const secondsDegrees = ((seconds / 60) * 360) + 90;
+      const minutesDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6) + 90;
+      const hoursDegrees = ((displayHours / 12) * 360) + ((minutes / 60) * 30) + 90;
+      
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+      minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+      hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+    }
+    
+    // Update digital clock display
+    function updateDigitalClock(hours, minutes, seconds, ampm) {
+      // Convert to 12-hour format
+      const displayHours = hours % 12 || 12;
+      
+      digitalTime.innerHTML = `${formatTime(displayHours)}:${formatTime(minutes)}:${formatTime(seconds)} <span class="am-pm">${ampm}</span>`;
+    }
+    
+    // Update clock
+    function updateClock() {
+      let hours, minutes, seconds, ampm;
+      
+      if (useRealTime) {
+        const now = new Date();
+        hours = now.getHours();
+        minutes = now.getMinutes();
+        seconds = now.getSeconds();
+        ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        // Update inputs with current time
+        const displayHours = hours % 12 || 12;
+        hoursInput.value = displayHours;
+        minutesInput.value = minutes;
+        secondsInput.value = seconds;
+        ampmInput.value = ampm;
+      } else {
+        hours = customTime.hours;
+        minutes = customTime.minutes;
+        seconds = customTime.seconds;
+        ampm = customTime.ampm;
+        
+        // Convert to 24-hour format for calculations
+        if (ampm === 'PM' && hours !== 12) {
+          hours += 12;
+        } else if (ampm === 'AM' && hours === 12) {
+          hours = 0;
+        }
+      }
+      
+      setClockHands(hours, minutes, seconds);
+      updateDigitalClock(hours, minutes, seconds, ampm);
+    }
+    
+    // Set custom time
+    function setCustomTime() {
+      const hours = parseInt(hoursInput.value) || 12;
+      const minutes = parseInt(minutesInput.value) || 0;
+      const seconds = parseInt(secondsInput.value) || 0;
+      const ampm = ampmInput.value;
+      
+      // Validate input
+      customTime.hours = Math.max(1, Math.min(12, hours));
+      customTime.minutes = Math.max(0, Math.min(59, minutes));
+      customTime.seconds = Math.max(0, Math.min(59, seconds));
+      customTime.ampm = ampm;
+      
+      // Update inputs with validated values
+      hoursInput.value = customTime.hours;
+      minutesInput.value = customTime.minutes;
+      secondsInput.value = customTime.seconds;
+      ampmInput.value = customTime.ampm;
+      
+      useRealTime = false;
+      updateClock();
+    }
+    
+    // Use real time
+    function useRealTimeFunction() {
+      useRealTime = true;
+    }
+    
+    // Speak time in Gujarati
+    function speakTime() {
+      if (!('speechSynthesis' in window)) {
+        alert('તમારું બ્રાઉઝર અવાજ સપોર્ટ કરતું નથી');
+        return;
+      }
+      
+      const hours = useRealTime ? new Date().getHours() : 
+                   (customTime.ampm === 'PM' && customTime.hours !== 12 ? customTime.hours + 12 : 
+                   (customTime.ampm === 'AM' && customTime.hours === 12 ? 0 : customTime.hours));
+      const minutes = useRealTime ? new Date().getMinutes() : customTime.minutes;
+      const ampm = useRealTime ? (hours >= 12 ? 'PM' : 'AM') : customTime.ampm;
+      
+      // Convert to 12-hour format for speech
+      const displayHours = hours % 12 || 12;
+      
+      // Gujarati numbers in words
+      const gujaratiHours = [
+        "બાર", "એક", "બે", "ત્રણ", "ચાર", "પાંચ", "છ", "સાત", "આઠ", "નવ", "દસ", "અગિયાર", "બાર"
+      ];
+      
+      const gujaratiMinutes = [
+        "સૂજરો", "એક", "બે", "ત્રણ", "ચાર", "પાંચ", "છ", "સાત", "આઠ", "નવ", "દસ",
+        "અગિયાર", "બાર", "તેર", "ચૌદ", "પંદર", "સોળ", "સત્તર", "અઢાર", "ઓગણીસ", "વીસ",
+        "એકવીસ", "બાવીસ", "તેવીસ", "ચોવીસ", "પચ્ચીસ", "છવીસ", "સત્તાવીસ", "અઠ્ઠાવીસ", "ઓગણત્રીસ", "ત્રીસ",
+        "એકત્રીસ", "બત્રીસ", "તેત્રીસ", "ચોત્રીસ", "પાંત્રીસ", "છત્રીસ", "સાડત્રીસ", "અડત્રીસ", "ઓગણચાલીસ", "ચાલીસ",
+        "એકતાલીસ", "બેતાલીસ", "ત્રેતાલીસ", "ચુંમાલીસ", "પિસ્તાલીસ", "છેતાલીસ", "સુડતાલીસ", "સરડતાલીસ", "ઓગણપચાસ", "પચાસ",
+        "એકાવન", "બાવન", "ત્રેપન", "ચોપન", "પંચાવન", "છપ્પન", "સત્તાવન", "સઠાવન", "ઓગણસાઠ", "સાઠ"
+      ];
+      
+      const period = ampm === 'PM' ? "રાત" : "સવાર";
+      
+      const timeText = `હવે સમય છે ${gujaratiHours[displayHours]} વાગ્યા અને ${gujaratiMinutes[minutes]} મિનિટ ${period}ના`;
+      
+      const utterance = new SpeechSynthesisUtterance(timeText);
+      utterance.lang = 'gu-IN';
+      utterance.rate = 0.9;
+      
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+    
+    // Event listeners
+    setTimeBtn.addEventListener('click', setCustomTime);
+    useRealTimeBtn.addEventListener('click', useRealTimeFunction);
+    speakTimeBtn.addEventListener('click', speakTime);
+    
+    // Initialize clock
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
